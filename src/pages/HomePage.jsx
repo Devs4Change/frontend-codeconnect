@@ -47,6 +47,6 @@ function HomePage() {
     </div>
     </RootLayout>
   );
-}
+};
 
 export default HomePage;
