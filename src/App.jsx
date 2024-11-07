@@ -4,7 +4,8 @@ import CourseCard from './components/CourseCard';
 import HomePage from './pages/HomePage';
 import CourseList from './pages/CourseList';
 import SignUpForm from './pages/SignUpForm';
-import LogInForm from './pages/LogInForm';
+import LogInForm from './pages/LoginForm';
+
 
 function App() {
   const router = createBrowserRouter([
