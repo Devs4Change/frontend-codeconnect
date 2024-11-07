@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Define the state for menu toggle
 
   // Function to toggle dark mode
   const handleDarkModeToggle = () => {
@@ -60,6 +61,17 @@ function Navbar() {
           </svg>
         </button>
       </div>
+
+      {/* Mobile Links (conditionally rendered based on isMenuOpen) */}
+      {isMenuOpen && (
+        <ul className="md:hidden bg-cyan-500 text-white p-4 space-y-4 w-full">
+          <li><Link to="/" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Home</Link></li>
+          <li><Link to="/dashboard" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
+          <li><Link to="/profile" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
+          <li><Link to="/signup" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
+          <li><Link to="/login" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
+        </ul>
+      )}
     </nav>
   );
 }
