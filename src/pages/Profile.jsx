@@ -1,5 +1,3 @@
-// client/src/pages/Profile.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -12,7 +10,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/api/user/profile', {
+        const response = await axios.get('https://code-connect-api.onrender.com/users/profile', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setUserData(response.data);
@@ -35,7 +33,7 @@ const Profile = () => {
     
     try {
       const response = await axios.put(
-        '/api/user/updateProfile',
+        'https://code-connect-api.onrender.com/users/updateProfile',
         formData,
         {
           headers: {
