@@ -1,28 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-function Navbar() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Define the state for menu toggle
+const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Manage dark mode state
+  const navigate = useNavigate();
 
-  // Function to toggle dark mode
-  const handleDarkModeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark', !isDarkMode);
-  };
-
+  // Check if the user prefers dark mode or if it's set in localStorage
   useEffect(() => {
-    // Persist dark mode preference
-    if (localStorage.getItem('theme') === 'dark') {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // Set login status based on token presence
+    
+    // Check dark mode preference from localStorage
+    const darkModePreference = localStorage.getItem("darkMode");
+    if (darkModePreference === "true") {
       setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
-  useEffect(() => {
-    // Save preference to localStorage
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
+  // Handle toggling of dark mode
+  const handleDarkModeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", "true"); // Save preference
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", "false"); // Save preference
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/"); // Optionally, navigate to the homepage
+  };
 
   return (
     <nav className="bg-cyan-500 text-white px-4 py-3 shadow-md dark:bg-gray-800">
@@ -35,10 +51,18 @@ function Navbar() {
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6">
           <li><Link to="/" className="hover:text-blue-600 dark:hover:text-gray-400">Home</Link></li>
-          <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
-          <li><Link to="/profile" className="hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
-          <li><Link to="/signup" className="hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
-          <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
+          {isLoggedIn ? (
+            <>
+              <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
+              <li><Link to="/profile" className="hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
+              <li><button onClick={handleLogout} className="hover:text-blue-600 dark:hover:text-gray-400">Logout</button></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
+              <li><Link to="/signup" className="hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
+            </>
+          )}
         </ul>
 
         {/* Dark Mode Toggle */}
@@ -47,12 +71,11 @@ function Navbar() {
           className="ml-4 p-2 rounded bg-gray-100 text-blue-600 dark:bg-gray-700 dark:text-white focus:outline-none md:ml-0"
           aria-label="Toggle Dark Mode"
         >
-          {isDarkMode ? '🌞' : '🌙'}
+          {isDarkMode ? '🌞' : '🌙'} {/* Sun for light mode, Moon for dark mode */}
         </button>
 
         {/* Mobile Menu Toggle Button */}
         <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-white focus:outline-none md:hidden ml-4"
           aria-label="Toggle Menu"
         >
@@ -61,19 +84,8 @@ function Navbar() {
           </svg>
         </button>
       </div>
-
-      {/* Mobile Links (conditionally rendered based on isMenuOpen) */}
-      {isMenuOpen && (
-        <ul className="md:hidden bg-cyan-500 text-white p-4 space-y-4 w-full">
-          <li><Link to="/" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Home</Link></li>
-          <li><Link to="/dashboard" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
-          <li><Link to="/profile" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
-          <li><Link to="/signup" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
-          <li><Link to="/login" className="block py-2 hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
-        </ul>
-      )}
     </nav>
   );
-}
+};
 
 export default Navbar;

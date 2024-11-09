@@ -1,9 +1,16 @@
-import React from 'react'
+import { Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+
+
+
 
 const DashboardLayout = () => {
   return (
-    <div>DashboardLayout</div>
-  )
+    <div className='flex flex-row items-start'>
+        <Sidebar/>
+        <Outlet/>
+    </div>
+  );
 };
 
 export default DashboardLayout;
