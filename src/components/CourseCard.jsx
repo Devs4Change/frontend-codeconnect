@@ -2,21 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function CourseCard({ course }) {
-  // Display a preview of the first 100 characters of course content
-  const courseContentSnippet = course.content ? course.content.substring(0, 100) : 'No content available'; 
+  // Extract the video URL if it exists in the content (you may need to parse the content depending on its format)
+  const videoUrl = course.content && course.content.match(/https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+|(?:v|e(?:mbed)?)\/|(?:v|e(?:mbed)?)\?v=)([a-zA-Z0-9_-]{11}))/)
+    ? course.content.match(/https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+|(?:v|e(?:mbed)?)\/|(?:v|e(?:mbed)?)\?v=)([a-zA-Z0-9_-]{11}))/)[0] // Capture the YouTube video URL
+    : null;
 
-  // Assuming the video URL is part of the course content (e.g., videoUrl)
-  const videoUrl = course.videoUrl;  // Replace with the actual field name for video URL
+  // Extract a snippet from the course content, excluding the video
+  const contentText = course.content ? course.content.replace(videoUrl, '').substring(0, 100) : 'No content available';
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition duration-200">
       <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
       <p className="text-gray-600 dark:text-gray-300 mb-4">{course.description}</p>
 
-      {/* Display a snippet of the course content */}
-      <p className="text-gray-500 dark:text-gray-400 mb-4">{courseContentSnippet}...</p>
+      {/* Display a snippet of the course content excluding the video */}
+      <p className="text-gray-500 dark:text-gray-400 mb-4">{contentText}...</p>
 
-      {/* Display a video preview if videoUrl is available */}
+      {/* Display the YouTube video preview if a video URL is found */}
       {videoUrl && (
         <div className="mb-4">
           <iframe
