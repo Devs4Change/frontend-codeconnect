@@ -13,7 +13,7 @@ export const apiLogin = async (payload) => {
 }
 
 export const apiProfile = async (payload) => {
-    return await apiClient.post ("/profile", payload);
+    return await apiClient.patch ("/users/profile", payload);
 }
 
 //implicit return

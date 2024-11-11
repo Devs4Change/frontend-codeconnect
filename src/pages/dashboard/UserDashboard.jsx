@@ -5,18 +5,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-// Progress Bar Component
-const ProgressBar = ({ progress }) => {
-  return (
-    <div className="relative w-full h-4 bg-gray-200 dark:bg-gray-600 rounded-md overflow-hidden mt-2">
-      <div
-        style={{ width: `${progress}%` }}
-        className="absolute left-0 top-0 h-full bg-blue-500 transition-all duration-300"
-      ></div>
-    </div>
-  );
-};
-
 const UserDashboard = () => {
   const [courses, setCourses] = useState([]);  // Ensure courses is an array
   const [progressData, setProgressData] = useState({});  // Store course progress
@@ -57,6 +45,18 @@ const UserDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');  // Remove JWT token from localStorage
     navigate('/login');  // Redirect to login page
+  };
+
+  // Progress Bar Component
+  const ProgressBar = ({ progress }) => {
+    return (
+      <div className="relative w-full h-4 bg-gray-200 dark:bg-gray-600 rounded-md overflow-hidden mt-2">
+        <div
+          style={{ width: `${progress}%` }}
+          className="absolute left-0 top-0 h-full bg-blue-500 transition-all duration-300"
+        ></div>
+      </div>
+    );
   };
 
   if (isLoading) return <p className="text-center text-gray-500">Loading dashboard...</p>;  // Loading state

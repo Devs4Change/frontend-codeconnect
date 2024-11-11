@@ -1,53 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-const CourseDetails = () => {
-  const { courseId } = useParams();
+const CourseDetail = () => {
+  const { courseId } = useParams(); // Get the courseId from the URL
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCourseDetails = async () => {
+    const fetchCourse = async () => {
+      const token = localStorage.getItem('token'); // Get token from localStorage
       try {
-        setLoading(true);
-        const response = await axios.get(`https://code-connect-api.onrender.com/courses/${courseId}`);
-        setCourse(response.data);
-        setLoading(false);
+        const response = await axios.get(`https://code-connect-api.onrender.com/courses/${courseId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCourse(response.data); // Set the course data
       } catch (error) {
-        setError("Error fetching course details. Please try again.");
+        setError('Error fetching course details');
+        console.error('Error fetching course:', error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchCourseDetails();
+    fetchCourse(); // Call to fetch course
   }, [courseId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  if (error) return <div>{error}</div>;
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div className="course-details p-6">
-      <ToastContainer /> {/* Toast container for notifications */}
-      <h1 className="text-3xl font-bold">{course.title}</h1>
-      <p className="mt-4">{course.description}</p>
-      {/* <div className="mt-6">
-        <h2 className="text-2xl font-semibold">Curriculum</h2>
-        <ul>
-          {course.curriculum && course.curriculum.map((topic, index) => (
-            <li key={index} className="mt-2">{topic}</li>
-          ))}
-        </ul>
-      </div> */}
-      <button className="mt-6 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600">
-        Enroll Now
-      </button>
+    <div className="p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+      <h2 className="text-2xl font-semibold">{course.title}</h2>
+      <p className="text-gray-600 dark:text-gray-300 mt-4">{course.description}</p>
+
+      {/* Display the full course content */}
+      <div className="mt-4">
+        <h3 className="text-xl font-semibold">Course Content</h3>
+        <p className="mt-2">{course.content}</p>
+      </div>
     </div>
   );
 };
 
-export default CourseDetails;
+export default CourseDetail;

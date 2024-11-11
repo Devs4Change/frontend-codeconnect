@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHome, FaUser, FaBook, FaCog, FaSignOutAlt, FaBars } from 'react-icons/fa'; // Import icons
+import { FaHome, FaUser, FaBook, FaCog, FaSignOutAlt, FaBars } from 'react-icons/fa';
 
 // Logout Button Component
 const LogoutButton = ({ handleLogout, isCollapsed }) => {
@@ -24,7 +24,7 @@ const Sidebar = ({ profile, handleLogout }) => {
   };
 
   // Ensure profile exists before rendering its properties
-  const profilePicture = profile?.profilePicture || 'https://via.placeholder.com/150'; // Use placeholder if profilePicture is undefined
+  const profilePicture = profile?.avatar || 'https://via.placeholder.com/150'; // Use placeholder if avatar is undefined
 
   return (
     <aside className={`bg-gray-800 text-white transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col p-4 h-full`}>
