@@ -9,9 +9,13 @@ const CourseDetails = () => {
   const { courseId } = useParams(); // Get course ID from URL params
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch course details when component mounts
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
@@ -31,7 +35,6 @@ const CourseDetails = () => {
   }, [courseId]);
 
   if (loading) return <div>Loading...</div>;
-
   if (error) return <div>{error}</div>;
 
   // Handle enrollment action
@@ -45,17 +48,36 @@ const CourseDetails = () => {
       return;
     }
 
+    setIsEnrolling(true); // Set loading state
+
     try {
       // Attempt to enroll in the course
-      const response = await apiClient.post(`/enroll/${courseId}`);
+      const response = await apiClient.post(
+        `/enroll/${courseId}`,
+        { email, password },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       // Show success toast if enrollment is successful
       toast.success("Successfully enrolled in the course!");
       navigate("/courses"); // Redirect to the courses page after successful enrollment
     } catch (error) {
       // Show error toast if there was an issue with enrollment
-      console.error(error);
-      toast.error(error.response?.data?.message || "An error occurred during enrollment.");
+      console.error("Enrollment error:", error);
+      const errorMessage =
+        error.response?.data?.message || "An error occurred during enrollment.";
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
+      } else {
+        toast.error(errorMessage);
+      }
+    } finally {
+      setIsEnrolling(false); // Reset loading state
     }
   };
 
@@ -67,12 +89,33 @@ const CourseDetails = () => {
       <p className="mt-4">{course.description}</p>
       <p className="mt-4">{course.content}</p> {/* Display the full course content */}
 
+      {/* Email and Password Inputs */}
+      <div className="mt-6">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mb-2 p-2 border rounded"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mb-2 p-2 border rounded"
+          required
+        />
+      </div>
+
       {/* Enroll button */}
       <button
         onClick={handleEnroll}
-        className="mt-6 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600"
+        className="mt-6 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 disabled:bg-gray-400"
+        disabled={isEnrolling}
       >
-        Enroll Now
+        {isEnrolling ? "Enrolling..." : "Enroll Now"}
       </button>
     </div>
   );

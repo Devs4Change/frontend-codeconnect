@@ -10,6 +10,7 @@ import CourseList from './components/CourseList';
 import CourseDetails from './components/CourseDetails';
 import UserDashboard from './pages/dashboard/UserDashboard';
 import ModulePage from './components/ModulePage';
+import { UserProvider } from './context/UserContext';
 
 
 function App() {
@@ -66,7 +67,12 @@ function App() {
 
   ]);
 
-  return <RouterProvider router={router}/>
+  return (
+    <UserProvider>
+<RouterProvider router={router}/>
+</UserProvider>
+  )
+  
 };
 
 export default App;
