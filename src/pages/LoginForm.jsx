@@ -1,104 +1,166 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { apiLogin } from "../services/auth";
+import Navbar from "../components/Navbar";
 
 const LogInForm = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     const formData = new FormData(event.target);
     const email = formData.get("email");
     const password = formData.get("password");
-    console.log("Form Data:", { email, password });
+
+    console.log("Form Data:", {
+      email,
+      password
+    });
 
     try {
       const response = await apiLogin({ email, password });
-      console.log("API Response:", response);
+      console.log("Login Response:", response);
+      console.log("Token received:", response.data.token);
 
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.accessToken);
-        toast.success("Login successful!", { autoClose: 3000 });
+      if (response.status === 200 && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', email.split('@')[0]);
 
-        // Redirect to homepage after a short delay for the toast to show
+        console.log("Stored in localStorage:", {
+          token: localStorage.getItem('token'),
+          userEmail: localStorage.getItem('userEmail'),
+          userName: localStorage.getItem('userName')
+        });
+
+        toast.success("Login successful!");
         setTimeout(() => {
-          navigate("/");
-        }, 3000); // Adjust delay to allow time for toast notification to display
-        
+          navigate("/courses");
+        }, 1000);
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      toast.error("Login failed. Please try again.", { autoClose: 5000 });
+      console.error("Login error details:", error);
+      toast.error(error.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-100 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-8 shadow-2xl rounded-3xl w-full max-w-md mx-4 sm:mx-auto mt-20 mb-10">
-        <h2 className="text-2xl text-cyan-600 dark:text-cyan-400 font-bold mb-6 text-center">
-          Login
-        </h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300">
-              Email:
-            </label>
-            <input
-              name="email"
-              type="email"
-              required
-              className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-2 border-transparent focus:border-cyan-500 rounded-full shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out focus:outline-none"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300">
-              Password:
-            </label>
-            <input
-              name="password"
-              type="password"
-              required
-              className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-2 border-transparent focus:border-cyan-500 rounded-full shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out focus:outline-none"
-            />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Navbar />
+      <div className="pt-16 flex items-center justify-center min-h-screen">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md mx-4">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
+              Please sign in to your account
+            </p>
           </div>
 
-          <div className="flex justify-center mt-6">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Email Address
+              </label>
+              <input
+                name="email"
+                type="email"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Password
+              </label>
+              <input
+                name="password"
+                type="password"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-cyan-500 focus:ring-cyan-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                  Remember me
+                </label>
+              </div>
+              <Link
+                to="/forgot-password"
+                className="text-sm text-cyan-600 hover:text-cyan-500 dark:text-cyan-400"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Submit Button with Loading State */}
             <button
               type="submit"
-              className="w-[200px] py-3 bg-cyan-500 text-white font-bold rounded-full shadow-lg hover:bg-cyan-600 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:text-gray-200"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 text-white py-3 px-4 rounded-lg hover:opacity-90 transition-opacity duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Login
+              {isLoading ? (
+                <>
+                  <svg 
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                  >
+                    <circle 
+                      className="opacity-25" 
+                      cx="12" 
+                      cy="12" 
+                      r="10" 
+                      stroke="currentColor" 
+                      strokeWidth="4"
+                    />
+                    <path 
+                      className="opacity-75" 
+                      fill="currentColor" 
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
             </button>
+          </form>
+
+          {/* Sign Up Link */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 font-medium"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-        </form>
-
-        <div className="flex items-center justify-between mt-6">
-          <hr className="flex-grow border-gray-300 dark:border-gray-600" />
-          <span className="mx-4 text-gray-500 dark:text-gray-400">or</span>
-          <hr className="flex-grow border-gray-300 dark:border-gray-600" />
-        </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <Link
-              to="/signup"
-              className="text-cyan-500 dark:text-cyan-400 hover:underline"
-            >
-              Create an account
-            </Link>
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <Link
-              to="/forgot-password"
-              className="text-cyan-500 dark:text-cyan-400 hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </p>
         </div>
       </div>
       <ToastContainer />

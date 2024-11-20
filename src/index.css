@@ -6,3 +6,11 @@
 body {
   @apply bg-white dark:bg-gray-900 text-black dark:text-white;
 }
+
+:root {
+  color-scheme: light dark;
+}
+
+.dark {
+  color-scheme: dark;
+}

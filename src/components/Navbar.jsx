@@ -1,106 +1,201 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false); // Mobile menu visibility
   const navigate = useNavigate();
+  const isAuthenticated = !!localStorage.getItem("token");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const userName = localStorage.getItem("userName");
+  const userEmail = localStorage.getItem("userEmail");
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-    const darkModePreference = localStorage.getItem("darkMode");
-    if (darkModePreference === "true") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
-  const handleDarkModeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    if (!isDarkMode) {
+    if (isDarkMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("darkMode", "true");
     } else {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("darkMode", "false");
     }
-  };
+  }, [isDarkMode]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    toast.success("Logged out successfully");
     navigate("/");
   };
 
-  // Toggle mobile menu
-  const toggleMobileMenu = () => setShowMobileMenu(!showMobileMenu);
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const getDisplayName = () => {
+    if (userName && !userName.includes('@')) {
+      return userName;
+    }
+    if (userEmail) {
+      const name = userEmail.split('@')[0];
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+    return 'User';
+  };
 
   return (
-    <nav className="bg-cyan-500 text-white px-4 py-3 shadow-md dark:bg-gray-800">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold hover:text-blue-600 dark:hover:text-gray-400">
-          CodeConnect
-        </Link>
+    <nav className="bg-gradient-to-r from-cyan-600 to-cyan-500 fixed w-full z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Brand */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-cyan-500 font-bold text-xl">C</span>
+              </div>
+              <span className="text-white font-bold text-xl hidden sm:block">CodeConnect</span>
+            </Link>
+          </div>
 
-        {/* Desktop Links */}
-        <ul className="hidden md:flex space-x-6">
-          <li><Link to="/" className="hover:text-blue-600 dark:hover:text-gray-400">Home</Link></li>
-          {isLoggedIn ? (
-            <>
-              <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
-              <li><Link to="/profile" className="hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
-              <li><button onClick={handleLogout} className="hover:text-blue-600 dark:hover:text-gray-400">Logout</button></li>
-            </>
-          ) : (
-            <>
-              <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
-              <li><Link to="/signup" className="hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
-            </>
-          )}
-        </ul>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white p-2 rounded-md hover:bg-cyan-600 focus:outline-none"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
 
-        <button
-          onClick={handleDarkModeToggle}
-          className="ml-4 p-2 rounded bg-gray-100 text-blue-600 dark:bg-gray-700 dark:text-white focus:outline-none md:ml-0"
-          aria-label="Toggle Dark Mode"
-        >
-          {isDarkMode ? '🌞' : '🌙'}
-        </button>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/" className="text-cyan-50 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+              Home
+            </Link>
+            <Link to="/about" className="text-cyan-50 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+              About Us
+            </Link>
+            <Link to="/contact" className="text-cyan-50 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+              Contact
+            </Link>
+          </div>
 
-        {/* Mobile Menu Toggle Button */}
-        <button
-          onClick={toggleMobileMenu}
-          className="text-white focus:outline-none md:hidden ml-4"
-          aria-label="Toggle Menu"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
-        </button>
+          {/* Right Side - Dark Mode Toggle, Auth Buttons or User Menu */}
+          <div className="hidden md:flex items-center space-x-4">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white"
+              aria-label="Toggle dark mode"
+            >
+              {isDarkMode ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {!isAuthenticated ? (
+              <>
+                <Link to="/login" className="text-white bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-md text-sm font-medium">
+                  Login
+                </Link>
+                <Link to="/signup" className="text-cyan-600 bg-white hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-medium">
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-2 text-white focus:outline-none"
+                >
+                  <div className="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center">
+                    <span className="text-sm font-medium">
+                      {getDisplayName().charAt(0).toUpperCase() || "U"}
+                    </span>
+                  </div>
+                  <span className="hidden md:block">{getDisplayName()}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                    <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Dashboard
+                    </Link>
+                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Mobile Menu */}
-      {showMobileMenu && (
-        <ul className="md:hidden flex flex-col items-center space-y-4 bg-cyan-500 dark:bg-gray-800 p-4">
-          <li><Link to="/" onClick={() => setShowMobileMenu(false)} className="hover:text-blue-600 dark:hover:text-gray-400">Home</Link></li>
-          {isLoggedIn ? (
-            <>
-              <li><Link to="/dashboard" onClick={() => setShowMobileMenu(false)} className="hover:text-blue-600 dark:hover:text-gray-400">Dashboard</Link></li>
-              <li><Link to="/profile" onClick={() => setShowMobileMenu(false)} className="hover:text-blue-600 dark:hover:text-gray-400">Profile</Link></li>
-              <li><button onClick={() => { handleLogout(); setShowMobileMenu(false); }} className="hover:text-blue-600 dark:hover:text-gray-400">Logout</button></li>
-            </>
-          ) : (
-            <>
-              <li><Link to="/login" onClick={() => setShowMobileMenu(false)} className="hover:text-blue-600 dark:hover:text-gray-400">Login</Link></li>
-              <li><Link to="/signup" onClick={() => setShowMobileMenu(false)} className="hover:text-blue-600 dark:hover:text-gray-400">Sign Up</Link></li>
-            </>
-          )}
-        </ul>
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-cyan-600 p-4">
+          <div className="flex flex-col space-y-4">
+            <Link to="/" className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium">
+              Home
+            </Link>
+            <Link to="/about" className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium">
+              About Us
+            </Link>
+            <Link to="/contact" className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium">
+              Contact
+            </Link>
+            {!isAuthenticated ? (
+              <div className="flex flex-col space-y-2">
+                <Link to="/login" className="text-white bg-cyan-700 px-4 py-2 rounded-md text-base font-medium text-center">
+                  Login
+                </Link>
+                <Link to="/signup" className="text-cyan-600 bg-white px-4 py-2 rounded-md text-base font-medium text-center">
+                  Sign Up
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Link to="/dashboard" className="block text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium">
+                  Dashboard
+                </Link>
+                <Link to="/profile" className="block text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium">
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </nav>
   );
