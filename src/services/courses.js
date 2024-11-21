@@ -15,3 +15,10 @@ export const apiUpdateCourses = async (id, payload) => {
 }
 
 export const apiDelCourses = async (id) => apiClient.delete(`/courses/${id}`)
+
+
+
+
+https://code-connect-api.onrender.com/modules/html
+https://code-connect-api.onrender.com/modules/css
+https://code-connect-api.onrender.com/modules/javascript

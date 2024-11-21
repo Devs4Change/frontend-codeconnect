@@ -67,7 +67,16 @@ const EditProfile = () => {
       if (formData.name) formDataToSend.append("name", formData.name);
       if (formData.avatar) formDataToSend.append("avatar", formData.avatar);
 
-      await apiEditProfile(formDataToSend);
+      const response = await apiEditProfile(formDataToSend);
+
+      // Update localStorage with new name and avatar
+      if (formData.name) {
+        localStorage.setItem("userName", formData.name);
+      }
+      if (response.data.avatar) {
+        localStorage.setItem("userAvatar", response.data.avatar);
+      }
+
       toast.success("Profile updated successfully!");
       navigate("/profile");
     } catch (error) {
@@ -85,7 +94,10 @@ const EditProfile = () => {
           Edit Profile
         </h2>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-xl rounded-lg px-8 pt-6 pb-8 mb-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-gray-800 shadow-xl rounded-lg px-8 pt-6 pb-8 mb-4"
+        >
           {/* Avatar Upload */}
           <div className="mb-6">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">

@@ -1,7 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function CourseCard({ course }) {
+function CourseCard({ course, showProgress = false }) {
+  const getCourseType = (title) => {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('html')) return 'html';
+    if (lowerTitle.includes('css')) return 'css';
+    if (lowerTitle.includes('javascript')) return 'javascript';
+    return null;
+  };
+
+  const courseType = getCourseType(course.title);
+
   const videoUrl = course.content && course.content.match(/https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+|(?:v|e(?:mbed)?)\/|(?:v|e(?:mbed)?)\?v=)([a-zA-Z0-9_-]{11}))/)
     ? course.content.match(/https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+|(?:v|e(?:mbed)?)\/|(?:v|e(?:mbed)?)\?v=)([a-zA-Z0-9_-]{11}))/)[0]
     : null;
@@ -29,12 +39,25 @@ function CourseCard({ course }) {
         </div>
       )}
 
-      <Link
-        to={`/courses/${course._id}`}
-        className="inline-block px-6 py-3 bg-cyan-500 text-white font-semibold rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition duration-300"
-      >
-        View Course
-      </Link>
+      <div className="flex gap-3 mt-4">
+        {courseType && (
+          <Link
+            to={`/modules/${courseType}`}
+            className="inline-block px-6 py-3 bg-cyan-500 text-white font-semibold rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition duration-300"
+          >
+            View {courseType.toUpperCase()} Modules
+          </Link>
+        )}
+        
+        {showProgress && (
+          <Link
+            to={`/course-progress/${course._id}`}
+            className="inline-block px-6 py-3 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+          >
+            View Progress
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

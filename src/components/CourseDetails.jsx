@@ -50,7 +50,9 @@ const CourseDetails = () => {
         const token = localStorage.getItem("token");
         if (token) {
           try {
-            const enrollmentResponse = await apiClient.get(`/courses/${courseId}/enrollment-status`);
+            const enrollmentResponse = await apiClient.get(
+              `/courses/${courseId}/enrollment-status`
+            );
             setIsEnrolled(enrollmentResponse.data.isEnrolled);
           } catch (enrollError) {
             console.error("Error checking enrollment:", enrollError);
@@ -67,12 +69,17 @@ const CourseDetails = () => {
     fetchCourseDetails();
   }, [courseId]);
 
+  const getCourseType = (course) => {
+    // Extract course type from course data
+    return course?.category?.toLowerCase() || "html";
+  };
+
   const handleEnroll = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
       toast.error("Please sign up to enroll.");
-      navigate("/login", { state: { from: window.location.pathname } });
+      navigate("/signup", { state: { from: window.location.pathname } });
       return;
     }
 
@@ -101,14 +108,31 @@ const CourseDetails = () => {
       if (response.status === 200 || response.status === 201) {
         if (message === "User is already enrolled in the course") {
           toast.info("You are already enrolled in this course!");
-        } else if (message === "Successfully enrolled") {
-          toast.success("Successfully enrolled in the course!");
+        } else {
+          // Show success toast with custom styling
+          toast.success("🎉 Successfully enrolled in the course!", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+              backgroundColor: "#10B981",
+              color: "white",
+            },
+          });
         }
         setIsEnrolled(true);
 
+        // Get course type for redirection
+        const courseType = getCourseType(course);
+
+        // Redirect to modules page after toast is shown
         setTimeout(() => {
-          navigate(`/modules/${courseId}`);
-        }, 1000);
+          navigate(`/modules/${courseType}`);
+        }, 2000);
       }
     } catch (error) {
       const errorMessage =
@@ -177,7 +201,7 @@ const CourseDetails = () => {
                   </h2>
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
                     {/* Video Section */}
-                    {course?.content && (
+                    {course?.content && course.content.includes('secure/uploads') && (
                       <div className="mb-6">
                         <div className="relative w-full max-w-2xl mx-auto h-[300px] rounded-lg overflow-hidden">
                           <video
@@ -196,10 +220,12 @@ const CourseDetails = () => {
                       </div>
                     )}
 
-                    {/* Text Content */}
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {course.content}
-                    </p>
+                    {/* Text Content - Only show if it's not a video path */}
+                    {course?.content && !course.content.includes('secure/uploads') && (
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {course.content}
+                      </p>
+                    )}
                   </div>
                 </div>
 

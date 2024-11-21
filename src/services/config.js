@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const API_BASE_URL = 'https://code-connect-api.onrender.com';
+
 export const apiClient = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL || "https://code-connect-api.onrender.com",

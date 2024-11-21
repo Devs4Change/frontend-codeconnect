@@ -1,146 +1,158 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../services/config';
-import { toast } from 'react-toastify';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 const ModulePage = () => {
-  const { courseId } = useParams();
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentModule, setCurrentModule] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState(null);
+  const { courseType } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchModules = async () => {
+    window.scrollTo(0, 0);
+    
+    const validCourseTypes = ['html', 'css', 'javascript'];
+    
+    const loadModules = async () => {
+      if (!courseType) {
+        setError('Course type is required');
+        setLoading(false);
+        return;
+      }
+
+      const normalizedCourseType = courseType.toLowerCase();
+
+      if (!validCourseTypes.includes(normalizedCourseType)) {
+        setError('Invalid course type');
+        setLoading(false);
+        navigate('/courses');
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('token');
-        // Fetch modules and progress
-        const [modulesResponse, progressResponse] = await Promise.all([
-          apiClient.get(`/courses/${courseId}/modules`),
-          apiClient.get(`/courses/${courseId}/progress`)
-        ]);
+        setLoading(true);
+        const response = await apiClient.get(`/modules/${normalizedCourseType}`);
+        const data = response.data;
         
-        setModules(modulesResponse.data);
-        setProgress(progressResponse.data.progress || 0);
+        // Sort modules by order property if it exists, or by title
+        const sortedModules = data.sort((a, b) => {
+          if (a.order !== undefined && b.order !== undefined) {
+            return a.order - b.order;
+          }
+          return a.title.localeCompare(b.title);
+        });
         
-        // Set first module as current if available
-        if (modulesResponse.data.length > 0) {
-          setCurrentModule(modulesResponse.data[0]);
-        }
-      } catch (error) {
-        console.error('Error fetching modules:', error);
-        toast.error('Failed to load course modules');
+        setModules(sortedModules);
+      } catch (err) {
+        console.error('Error loading modules:', err);
+        setError(err.message || 'Failed to load modules');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchModules();
-  }, [courseId]);
+    loadModules();
+  }, [courseType, navigate]);
 
-  const handleModuleCompletion = async (moduleId) => {
-    try {
-      // Mark module as complete in backend
-      await apiClient.post(`/courses/${courseId}/modules/${moduleId}/complete`);
-      
-      // Fetch updated progress
-      const progressResponse = await apiClient.get(`/courses/${courseId}/progress`);
-      setProgress(progressResponse.data.progress);
-      
-      // Update modules list to show completion
-      const updatedModules = modules.map(module => 
-        module._id === moduleId ? { ...module, isCompleted: true } : module
+  const renderContent = (content, moduleId) => {
+    if (!content) return null;
+    
+    if (typeof content === 'string') {
+      return (
+        <div key={`${moduleId}-content`} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+          <p className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{content}</p>
+        </div>
       );
-      setModules(updatedModules);
-      
-      toast.success('Module completed!');
-    } catch (error) {
-      toast.error('Failed to mark module as complete');
     }
+    
+    if (Array.isArray(content)) {
+      return content.map((item, index) => (
+        <div 
+          key={`${moduleId}-${index}`}
+          className="p-4 bg-gray-50 dark:bg-gray-700 rounded-md"
+        >
+          <p className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{item}</p>
+        </div>
+      ));
+    }
+
+    return (
+      <div key={`${moduleId}-json`} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+        <p className="text-gray-700 dark:text-gray-200">
+          {JSON.stringify(content, null, 2)}
+        </p>
+      </div>
+    );
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
+          <div className="text-red-500">Error loading modules: {error}</div>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Progress Bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Course Progress</h2>
-          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{progress}%</span>
-        </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-          <div 
-            className="bg-cyan-500 h-2.5 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Module List Sidebar */}
-        <div className="md:col-span-1 bg-white dark:bg-gray-800 rounded-lg p-4">
-          <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Course Modules</h2>
-          <div className="space-y-2">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 pt-24 flex-grow">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white capitalize">
+            {courseType} Learning Path
+          </h1>
+          
+          <div className="space-y-6 mb-8">
             {modules.map((module, index) => (
-              <button
-                key={module._id}
-                onClick={() => setCurrentModule(module)}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
-                  currentModule?._id === module._id
-                    ? 'bg-cyan-50 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-300'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                }`}
+              <div 
+                key={module._id || index} 
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-900 dark:text-white">Module {index + 1}</span>
-                  {module.isCompleted && (
-                    <span className="text-green-500">✓</span>
-                  )}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-cyan-500 text-white rounded-full flex items-center justify-center font-bold">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                        {module.title}
+                      </h2>
+                      {module.description && (
+                        <p className="text-gray-600 dark:text-gray-300 mt-1">
+                          {module.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{module.title}</p>
-              </button>
+                <div className="p-6 space-y-4">
+                  {renderContent(module.content, module._id)}
+                </div>
+              </div>
             ))}
           </div>
         </div>
-
-        {/* Current Module Content */}
-        <div className="md:col-span-3 bg-white dark:bg-gray-800 rounded-lg p-6">
-          {currentModule ? (
-            <>
-              <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-                {currentModule.title}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                {currentModule.description}
-              </p>
-              
-              {/* Module Content */}
-              <div className="prose dark:prose-invert max-w-none mb-6">
-                {currentModule.content}
-              </div>
-
-              {/* Complete Module Button */}
-              {!currentModule.isCompleted && (
-                <button
-                  onClick={() => handleModuleCompletion(currentModule._id)}
-                  className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
-                >
-                  Mark as Complete
-                </button>
-              )}
-            </>
-          ) : (
-            <p className="text-gray-600 dark:text-gray-400">Select a module to begin</p>
-          )}
-        </div>
       </div>
+      <Footer />
     </div>
   );
 };
