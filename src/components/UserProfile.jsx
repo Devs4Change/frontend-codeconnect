@@ -138,7 +138,7 @@ const UserProfile = () => {
           {/* Edit Profile Button - Updated styling */}
           <div className="flex justify-center mt-8">
             <Link
-              to="/edit-profile"
+              to="/dashboard/edit-profile"
               className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-lg hover:opacity-90 transition-all duration-200 group text-base font-medium"
             >
               <svg

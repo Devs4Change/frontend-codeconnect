@@ -18,63 +18,58 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <HomePage />,
+    },
+    {
+      path: "login",
+      element: <LogInForm />,
+    },
+    {
+      path: "signup",
+      element: <SignUpForm />,
+    },
+    {
+      path: "courses",
+      element: <CoursesPage />,
+    },
+    {
+      path: "courses/:courseId",
+      element: <CourseDetails />,
+    },
+    {
+      path: "about",
+      element: <AboutPage />,
+    },
+    {
+      path: "contact",
+      element: <ContactPage />,
+    },
+    {
+      path: "modules/:courseType",
+      element: <ModulePage />,
+    },
+    {
+      path: "dashboard",
+      element: <DashboardLayout />,
       children: [
         {
           index: true,
-          element: <HomePage />,
+          element: <UserDashboard />,
         },
         {
-          path: "login",
-          element: <LogInForm />,
+          path: "profile",
+          element: <UserProfile />,
         },
         {
-          path: "signup",
-          element: <SignUpForm />,
+          path: "edit-profile",
+          element: <EditProfile />,
         },
         {
-          path: "courses",
-          element: <CoursesPage />,
-        },
-        {
-          path: "courses/:courseId",
-          element: <CourseDetails />,
-        },
-        {
-          path: "about",
-          element: <AboutPage />,
-        },
-        {
-          path: "contact",
-          element: <ContactPage />,
-        },
-        {
-          path: "modules/:courseType",
-          element: <ModulePage />,
-        },
-        {
-          path: "dashboard",
-          element: <DashboardLayout />,
-          children: [
-            {
-              index: true,
-              element: <UserDashboard />,
-            },
-            {
-              path: "profile",
-              element: <UserProfile />,
-            },
-            {
-              path: "edit-profile",
-              element: <EditProfile />,
-            },
-            {
-              path: "settings",
-              element: <SettingsPage />,
-            },
-          ],
+          path: "settings",
+          element: <SettingsPage />,
         },
       ],
-    },
+    }
   ]);
 
   return <RouterProvider router={router} />;

@@ -38,13 +38,13 @@ const LogInForm = () => {
           userName: localStorage.getItem('userName')
         });
 
-        toast.success("Login successful!");
+        toast.success("Sign in successful!");
         setTimeout(() => {
           navigate("/courses");
         }, 1000);
       }
     } catch (error) {
-      console.error("Login error details:", error);
+      console.error("Sign in error details:", error);
       toast.error(error.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);

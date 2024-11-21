@@ -37,12 +37,11 @@ const ModulePage = () => {
         const response = await apiClient.get(`/modules/${normalizedCourseType}`);
         const data = response.data;
         
-        // Sort modules by order property if it exists, or by title
+        // Sort modules to ensure "Introduction to ..." is first
         const sortedModules = data.sort((a, b) => {
-          if (a.order !== undefined && b.order !== undefined) {
-            return a.order - b.order;
-          }
-          return a.title.localeCompare(b.title);
+          if (a.title.toLowerCase().startsWith('introduction to')) return -1;
+          if (b.title.toLowerCase().startsWith('introduction to')) return 1;
+          return a.order - b.order || a.title.localeCompare(b.title);
         });
         
         setModules(sortedModules);

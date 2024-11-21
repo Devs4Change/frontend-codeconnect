@@ -97,7 +97,9 @@ const UserDashboard = () => {
         <h1 className="text-xl sm:text-2xl font-bold mb-2">
           Welcome back, {localStorage.getItem("userName")}!
         </h1>
-        <p className="text-cyan-50 text-sm sm:text-base">Continue your learning journey</p>
+        <p className="text-cyan-50 text-sm sm:text-base">
+          Continue your learning journey
+        </p>
       </div>
 
       {/* Stats Overview */}
@@ -181,27 +183,31 @@ const UserDashboard = () => {
             Recommended Courses
           </h2>
           <div className="space-y-4">
-            {["HTML & CSS Basics", "JavaScript Essentials"].map((course, index) => (
-              <Link
-                key={index}
-                to="/courses"
-                className="block border dark:border-gray-700 rounded-lg p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
-                      {course}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                      {index === 0
-                        ? "Learn the fundamentals of web development"
-                        : "Master JavaScript programming"}
-                    </p>
+            {["HTML & CSS Basics", "JavaScript Essentials"].map(
+              (course, index) => (
+                <Link
+                  key={index}
+                  to="/courses"
+                  className="block border dark:border-gray-700 rounded-lg p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
+                        {course}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                        {index === 0
+                          ? "Learn the fundamentals of web development"
+                          : "Master JavaScript programming"}
+                      </p>
+                    </div>
+                    <span className="text-cyan-500 transform transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
                   </div>
-                  <span className="text-cyan-500 transform transition-transform group-hover:translate-x-1">→</span>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            )}
           </div>
         </div>
       </div>

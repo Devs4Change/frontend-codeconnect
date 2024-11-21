@@ -166,6 +166,18 @@ const CourseDetails = () => {
     return <div className="text-center text-red-600 p-6">{error}</div>;
   }
 
+  // Determine courseType based on course title or type
+  const courseType = course.type?.toLowerCase() || course.title.toLowerCase();
+
+  // Map courseType to module path
+  const modulePath = courseType.includes('html')
+    ? 'html'
+    : courseType.includes('css')
+    ? 'css'
+    : courseType.includes('javascript')
+    ? 'javascript'
+    : '';
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar />
@@ -201,31 +213,33 @@ const CourseDetails = () => {
                   </h2>
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
                     {/* Video Section */}
-                    {course?.content && course.content.includes('secure/uploads') && (
-                      <div className="mb-6">
-                        <div className="relative w-full max-w-2xl mx-auto h-[300px] rounded-lg overflow-hidden">
-                          <video
-                            controls
-                            className="absolute top-0 left-0 w-full h-full object-contain bg-black"
-                            controlsList="nodownload"
-                            preload="auto"
-                          >
-                            <source
-                              src={getVideoUrl(course.content)}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
+                    {course?.content &&
+                      course.content.includes("secure/uploads") && (
+                        <div className="mb-6">
+                          <div className="relative w-full max-w-2xl mx-auto h-[300px] rounded-lg overflow-hidden">
+                            <video
+                              controls
+                              className="absolute top-0 left-0 w-full h-full object-contain bg-black"
+                              controlsList="nodownload"
+                              preload="auto"
+                            >
+                              <source
+                                src={getVideoUrl(course.content)}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
                     {/* Text Content - Only show if it's not a video path */}
-                    {course?.content && !course.content.includes('secure/uploads') && (
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {course.content}
-                      </p>
-                    )}
+                    {course?.content &&
+                      !course.content.includes("secure/uploads") && (
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {course.content}
+                        </p>
+                      )}
                   </div>
                 </div>
 
@@ -233,7 +247,7 @@ const CourseDetails = () => {
                 <div className="mt-8 flex justify-center">
                   {isEnrolled ? (
                     <Link
-                      to={`/modules/${courseId}`}
+                      to={`/modules/${modulePath}`}
                       className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-lg hover:opacity-90 transition-all duration-200"
                     >
                       <svg

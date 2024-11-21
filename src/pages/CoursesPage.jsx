@@ -28,11 +28,16 @@ const CoursesPage = () => {
   }, []);
 
   const filteredCourses = courses.filter((course) => {
+    console.log('Course:', course);
+    console.log('Current filter:', filter);
+    
     const matchesSearch =
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter =
       filter === "all" || course.category?.toLowerCase() === filter;
+    
+    console.log('Matches filter:', matchesFilter);
     return matchesSearch && matchesFilter;
   });
 
