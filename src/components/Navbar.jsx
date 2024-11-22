@@ -149,44 +149,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Right Side - Dark Mode Toggle, Auth Buttons or User Menu */}
+          {/* Right Side - Auth Buttons or User Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={() => window.toggleTheme()}
-              className="p-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white"
-              aria-label="Toggle dark mode"
-            >
-              {document.documentElement.classList.contains('dark') ? (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-            </button>
-
             {!isAuthenticated ? (
               <>
                 <Link
@@ -224,10 +188,6 @@ const Navbar = () => {
                         src={`https://savefiles.org/${userAvatar}?shareable_link=524`}
                         alt={userName}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.nextSibling.style.display = "flex";
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full bg-cyan-600 flex items-center justify-center">
@@ -237,7 +197,7 @@ const Navbar = () => {
                       </div>
                     )}
                   </div>
-                  <span className="hidden md:block">{userName}</span>
+                  <span className="hidden md:block">{getDisplayName()}</span>
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -261,7 +221,7 @@ const Navbar = () => {
                     >
                       Dashboard
                     </Link>
-                    
+
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
@@ -314,26 +274,20 @@ const Navbar = () => {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-2">
+              <>
                 <Link
                   to="/dashboard"
-                  className="block text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
+                  className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
                 >
                   Dashboard
                 </Link>
-                <Link
-                  to="/profile"
-                  className="block text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Profile
-                </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
+                  className="text-red-600 bg-white px-3 py-2 rounded-md text-base font-medium"
                 >
                   Logout
                 </button>
-              </div>
+              </>
             )}
           </div>
         </div>
