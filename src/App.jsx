@@ -21,31 +21,31 @@ function App() {
       element: <HomePage />,
     },
     {
-      path: "login",
+      path: "/login",
       element: <LogInForm />,
     },
     {
-      path: "signup",
+      path: "/signup",
       element: <SignUpForm />,
     },
     {
-      path: "courses",
+      path: "/courses",
       element: <CoursesPage />,
     },
     {
-      path: "courses/:courseId",
+      path: "/courses/:courseId",
       element: <CourseDetails />,
     },
     {
-      path: "about",
+      path: "/about",
       element: <AboutPage />,
     },
     {
-      path: "contact",
+      path: "/contact",
       element: <ContactPage />,
     },
     {
-      path: "modules/:courseType",
+      path: "/modules/:courseType",
       element: <ModulePage />,
     },
     {
