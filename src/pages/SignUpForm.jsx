@@ -63,7 +63,7 @@ const SignUpForm = () => {
                 name="name"
                 type="text"
                 required
-                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
+                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
                 placeholder="Full Name"
               />
             </div>
@@ -78,7 +78,7 @@ const SignUpForm = () => {
                 name="email"
                 type="email"
                 required
-                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
+                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
                 placeholder="Email Address"
               />
             </div>
@@ -93,7 +93,7 @@ const SignUpForm = () => {
                 name="password"
                 type="password"
                 required
-                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
+                className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
                 placeholder="Password"
               />
             </div>
@@ -116,17 +116,18 @@ const SignUpForm = () => {
               )}
             </button>
           </form>
-
-          <p className="mt-8 text-center text-gray-600 dark:text-gray-400">
-            Already have an account?{" "}
-            <Link to="/login" className="text-cyan-600 hover:text-cyan-500 font-medium">
-              Sign in
-            </Link>
-          </p>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Already have an account?{' '}
+              <Link to="/login" className="text-cyan-500 hover:text-cyan-600 font-medium">
+                Log In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-      <Footer/>
       <ToastContainer />
+      <Footer />
     </div>
   );
 };

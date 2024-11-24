@@ -148,7 +148,7 @@ const LogInForm = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </div>
   );

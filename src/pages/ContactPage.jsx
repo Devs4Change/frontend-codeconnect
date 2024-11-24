@@ -53,7 +53,7 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter your name"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                   />
                 </div>
                 <div>
@@ -67,7 +67,7 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter your email"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                   />
                 </div>
               </div>
@@ -82,7 +82,7 @@ const ContactPage = () => {
                   onChange={handleChange}
                   required
                   placeholder="Enter the subject"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 />
               </div>
               <div>
@@ -96,7 +96,7 @@ const ContactPage = () => {
                   required
                   placeholder="Write your message here..."
                   rows="6"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 ></textarea>
               </div>
               <div>

@@ -249,19 +249,36 @@ const Navbar = () => {
                     {userAvatar ? (
                       <img
                         src={`https://savefiles.org/${userAvatar}?shareable_link=524`}
-                        alt={userName}
+                        alt="avatar"
                         className="object-cover w-full h-full"
                       />
                     ) : (
-                      <span className="text-white text-xs font-bold uppercase">{userName.charAt(0)}</span>
+                      <span className="text-xl text-white">
+                        {getDisplayName().charAt(0)}
+                      </span>
                     )}
                   </div>
-                  <span className="text-sm font-medium">
-                    {getDisplayName()}
-                  </span>
+                  <span className="text-sm">{getDisplayName()}</span>
+                  <svg
+                    className="w-4 h-4 text-gray-600 dark:text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg py-2 w-48">
+                    <a
+                      href="/dashboard"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Dashboard
+                    </a>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -276,58 +293,79 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-800 p-4">
+        <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-2">
           <a
             href="/"
-            className="block text-gray-700 dark:text-gray-300 py-2"
+            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
           >
             Home
           </a>
           <a
             href="/about"
-            className="block text-gray-700 dark:text-gray-300 py-2"
+            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
           >
             About Us
           </a>
           <a
             href="/contact"
-            className="block text-gray-700 dark:text-gray-300 py-2"
+            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
           >
             Contact
           </a>
-
-          {/* Dark Mode Toggle in Mobile View */}
-          <button
-            onClick={toggleDarkMode}
-            className={`p-2 rounded-md hover:bg-opacity-20 hover:bg-gray-100 focus:outline-none transition-colors w-full ${
-              scrolled
-                ? "text-gray-700 dark:text-gray-300"
-                : "text-gray-700 dark:text-white"
-            }`}
-            aria-label="Toggle dark mode"
-          >
-            {darkMode ? <SunIcon /> : <MoonIcon />}
-          </button>
-{/* Mobile Authentication Links */}
-{!isAuthenticated ? (
+          {!isAuthenticated ? (
             <>
               <a
                 href="/login"
-                className="block text-gray-700 dark:text-gray-300 py-2"
+                className="block text-sm text-cyan-500 hover:bg-gray-100 p-2 rounded-md"
               >
                 Login
               </a>
               <a
                 href="/signup"
-                className="block text-gray-700 dark:text-gray-300 py-2"
+                className="block text-sm text-cyan-500 hover:bg-gray-100 p-2 rounded-md"
               >
                 Sign Up
               </a>
             </>
-          ) : null}
-
+          ) : (
+            <div>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full text-left text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+              >
+                {getDisplayName()}
+                <svg
+                  className="w-4 h-4 text-gray-600 dark:text-white inline-block ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+              {isDropdownOpen && (
+                <div className="space-y-2">
+                  <a
+                    href="/dashboard"
+                    className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+                  >
+                    Dashboard
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </nav>
