@@ -67,7 +67,7 @@ const CoursesPage = () => {
                   placeholder="Search courses..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-cyan-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-cyan-500 bg-white text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-300"
                 />
                 <svg
                   className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"

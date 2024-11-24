@@ -250,45 +250,21 @@ const Navbar = () => {
                       <img
                         src={`https://savefiles.org/${userAvatar}?shareable_link=524`}
                         alt={userName}
-                        className="w-full h-full object-cover"
+                        className="object-cover w-full h-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                        <span className="text-white text-xl font-bold">
-                          {userName ? userName.charAt(0) : "U"}
-                        </span>
-                      </div>
+                      <span className="text-white text-xs font-bold uppercase">{userName.charAt(0)}</span>
                     )}
                   </div>
-                  <span>{getDisplayName()}</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  <span className="text-sm font-medium">
+                    {getDisplayName()}
+                  </span>
                 </button>
-
-                {/* Dropdown */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border rounded-lg shadow-lg">
-                    <a
-                      href="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-cyan-600 hover:text-white"
-                    >
-                      Dashboard
-                    </a>
+                  <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg py-2 w-48">
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-500 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Logout
                     </button>
@@ -300,59 +276,58 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-4">
+        <div className="md:hidden bg-white dark:bg-gray-800 p-4">
           <a
             href="/"
-            className="block text-gray-700 dark:text-gray-300"
+            className="block text-gray-700 dark:text-gray-300 py-2"
           >
             Home
           </a>
           <a
             href="/about"
-            className="block text-gray-700 dark:text-gray-300"
+            className="block text-gray-700 dark:text-gray-300 py-2"
           >
             About Us
           </a>
           <a
             href="/contact"
-            className="block text-gray-700 dark:text-gray-300"
+            className="block text-gray-700 dark:text-gray-300 py-2"
           >
             Contact
           </a>
 
-          {!isAuthenticated ? (
+          {/* Dark Mode Toggle in Mobile View */}
+          <button
+            onClick={toggleDarkMode}
+            className={`p-2 rounded-md hover:bg-opacity-20 hover:bg-gray-100 focus:outline-none transition-colors w-full ${
+              scrolled
+                ? "text-gray-700 dark:text-gray-300"
+                : "text-gray-700 dark:text-white"
+            }`}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? <SunIcon /> : <MoonIcon />}
+          </button>
+{/* Mobile Authentication Links */}
+{!isAuthenticated ? (
             <>
               <a
                 href="/login"
-                className="block text-cyan-600 dark:text-cyan-500"
+                className="block text-gray-700 dark:text-gray-300 py-2"
               >
                 Login
               </a>
               <a
                 href="/signup"
-                className="block text-cyan-600 dark:text-cyan-500"
+                className="block text-gray-700 dark:text-gray-300 py-2"
               >
                 Sign Up
               </a>
             </>
-          ) : (
-            <div>
-              <a
-                href="/dashboard"
-                className="block text-gray-700 dark:text-gray-300"
-              >
-                Dashboard
-              </a>
-              <button
-                onClick={handleLogout}
-                className="block text-red-600 dark:text-red-500"
-              >
-                Logout
-              </button>
-            </div>
-          )}
+          ) : null}
+
         </div>
       )}
     </nav>

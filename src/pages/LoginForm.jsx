@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { apiLogin } from "../services/auth";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const LogInForm = () => {
   const navigate = useNavigate();
@@ -17,26 +18,13 @@ const LogInForm = () => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    console.log("Form Data:", {
-      email,
-      password
-    });
-
     try {
       const response = await apiLogin({ email, password });
-      console.log("Login Response:", response);
-      console.log("Token received:", response.data.token);
 
       if (response.status === 200 && response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', email.split('@')[0]);
-
-        console.log("Stored in localStorage:", {
-          token: localStorage.getItem('token'),
-          userEmail: localStorage.getItem('userEmail'),
-          userName: localStorage.getItem('userName')
-        });
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", email.split("@")[0]);
 
         toast.success("Sign in successful!");
         setTimeout(() => {
@@ -44,7 +32,6 @@ const LogInForm = () => {
         }, 1000);
       }
     } catch (error) {
-      console.error("Sign in error details:", error);
       toast.error(error.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
@@ -59,9 +46,7 @@ const LogInForm = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Please sign in to your account
-            </p>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">Please sign in to your account</p>
           </div>
 
           {/* Form */}
@@ -75,7 +60,7 @@ const LogInForm = () => {
                 name="email"
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
                 placeholder="Enter your email"
               />
             </div>
@@ -89,7 +74,7 @@ const LogInForm = () => {
                 name="password"
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-300 transition-all duration-200"
                 placeholder="Enter your password"
               />
             </div>
@@ -121,30 +106,30 @@ const LogInForm = () => {
             >
               {isLoading ? (
                 <>
-                  <svg 
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
                     viewBox="0 0 24 24"
                   >
-                    <circle 
-                      className="opacity-25" 
-                      cx="12" 
-                      cy="12" 
-                      r="10" 
-                      stroke="currentColor" 
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
                       strokeWidth="4"
                     />
-                    <path 
-                      className="opacity-75" 
-                      fill="currentColor" 
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
                   Signing In...
                 </>
               ) : (
-                'Sign In'
+                "Sign In"
               )}
             </button>
           </form>
@@ -163,6 +148,7 @@ const LogInForm = () => {
           </div>
         </div>
       </div>
+      <Footer/>
       <ToastContainer />
     </div>
   );
