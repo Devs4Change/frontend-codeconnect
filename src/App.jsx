@@ -49,7 +49,7 @@ function App() {
       element: <ModulePage />,
     },
     {
-      path: "dashboard",
+      path: "/dashboard",
       element: <DashboardLayout />,
       children: [
         {
