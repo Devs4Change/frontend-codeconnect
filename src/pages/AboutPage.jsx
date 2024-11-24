@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import believeImage from '../assets/images/bee.jpg'; // Import image directly
+import firdausImage from '../assets/images/fir.jpeg'; // Import image directly
 
 const AboutPage = () => {
   useEffect(() => {
@@ -48,8 +50,12 @@ const AboutPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Believe Kwamitse */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl text-white font-bold">BK</span>
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 mx-auto mb-4 overflow-hidden">
+                  <img
+                    src={believeImage} // Use imported image
+                    alt="Believe Kwamitse"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Believe Kwamitse</h3>
                 <p className="text-cyan-600 dark:text-cyan-400 mb-3">Frontend Developer</p>
@@ -60,8 +66,12 @@ const AboutPage = () => {
 
               {/* Firdaus Suhuyini Fuseini */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl text-white font-bold">FF</span>
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 mx-auto mb-4 overflow-hidden">
+                  <img
+                    src={firdausImage} // Use imported image
+                    alt="Firdaus Suhuyini Fuseini"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Firdaus Suhuyini Fuseini</h3>
                 <p className="text-cyan-600 dark:text-cyan-400 mb-3">Backend Developer</p>
@@ -103,4 +113,4 @@ const AboutPage = () => {
   );
 };
 
-export default AboutPage; 
+export default AboutPage;

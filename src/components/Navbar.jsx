@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const isAuthenticated = !!localStorage.getItem("token");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,6 +8,7 @@ const Navbar = () => {
   const userEmail = localStorage.getItem("userEmail");
   const [scrolled, setScrolled] = useState(false);
   const userAvatar = localStorage.getItem("userAvatar");
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,12 +26,21 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     localStorage.removeItem("userEmail");
-    toast.success("Logged out successfully");
-    navigate("/");
+    window.location.href = '/';
   };
 
   const getDisplayName = () => {
@@ -48,6 +54,50 @@ const Navbar = () => {
     return "User";
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Custom Moon Icon component
+  const MoonIcon = () => (
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+      <circle cx="12" cy="12" r="5" fill="currentColor" opacity="0.2" />
+    </svg>
+  );
+
+  // Custom Sun Icon component
+  const SunIcon = () => (
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
+        <animate
+          attributeName="opacity"
+          values="1;0.5;1"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </path>
+      <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.3" />
+    </svg>
+  );
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -60,7 +110,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
+            <a href="/" className="flex items-center space-x-2">
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                   scrolled ? "bg-cyan-500" : "bg-white"
@@ -81,7 +131,7 @@ const Navbar = () => {
               >
                 CodeConnect
               </span>
-            </Link>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -117,8 +167,8 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/"
+            <a
+              href="/"
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 scrolled
                   ? "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
@@ -126,9 +176,9 @@ const Navbar = () => {
               }`}
             >
               Home
-            </Link>
-            <Link
-              to="/about"
+            </a>
+            <a
+              href="/about"
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 scrolled
                   ? "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
@@ -136,9 +186,9 @@ const Navbar = () => {
               }`}
             >
               About Us
-            </Link>
-            <Link
-              to="/contact"
+            </a>
+            <a
+              href="/contact"
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 scrolled
                   ? "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
@@ -146,15 +196,28 @@ const Navbar = () => {
               }`}
             >
               Contact
-            </Link>
+            </a>
           </div>
 
-          {/* Right Side - Auth Buttons or User Menu */}
+          {/* Right Side - Dark Mode Toggle and Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-md hover:bg-opacity-20 hover:bg-gray-100 focus:outline-none transition-colors ${
+                scrolled
+                  ? "text-gray-700 dark:text-gray-300"
+                  : "text-white"
+              }`}
+              aria-label="Toggle dark mode"
+            >
+              {darkMode ? <SunIcon /> : <MoonIcon />}
+            </button>
+
             {!isAuthenticated ? (
               <>
-                <Link
-                  to="/login"
+                <a
+                  href="/login"
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
                     scrolled
                       ? "bg-cyan-500 text-white hover:bg-cyan-600"
@@ -162,9 +225,9 @@ const Navbar = () => {
                   }`}
                 >
                   Login
-                </Link>
-                <Link
-                  to="/signup"
+                </a>
+                <a
+                  href="/signup"
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
                     scrolled
                       ? "bg-white text-cyan-600 hover:bg-gray-50 border border-cyan-500"
@@ -172,7 +235,7 @@ const Navbar = () => {
                   }`}
                 >
                   Sign Up
-                </Link>
+                </a>
               </>
             ) : (
               <div className="relative">
@@ -190,19 +253,20 @@ const Navbar = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-cyan-600 flex items-center justify-center">
-                        <span className="text-sm font-medium text-white">
-                          {userName?.charAt(0).toUpperCase() || "U"}
+                      <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                        <span className="text-white text-xl font-bold">
+                          {userName ? userName.charAt(0) : "U"}
                         </span>
                       </div>
                     )}
                   </div>
-                  <span className="hidden md:block">{getDisplayName()}</span>
+                  <span>{getDisplayName()}</span>
                   <svg
-                    className="w-4 h-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
                     fill="none"
-                    stroke="currentColor"
                     viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
                     <path
                       strokeLinecap="round"
@@ -213,18 +277,18 @@ const Navbar = () => {
                   </svg>
                 </button>
 
+                {/* Dropdown */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-                    <Link
-                      to="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border rounded-lg shadow-lg">
+                    <a
+                      href="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-cyan-600 hover:text-white"
                     >
                       Dashboard
-                    </Link>
-
+                    </a>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-500 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white"
                     >
                       Logout
                     </button>
@@ -236,60 +300,59 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-cyan-600 p-4">
-          <div className="flex flex-col space-y-4">
-            <Link
-              to="/"
-              className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              About Us
-            </Link>
-            <Link
-              to="/contact"
-              className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Contact
-            </Link>
-            {!isAuthenticated ? (
-              <div className="flex flex-col space-y-2">
-                <Link
-                  to="/login"
-                  className="text-white bg-cyan-700 px-4 py-2 rounded-md text-base font-medium text-center"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="text-cyan-600 bg-white px-4 py-2 rounded-md text-base font-medium text-center"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            ) : (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="text-white hover:bg-cyan-700 px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-red-600 bg-white px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Logout
-                </button>
-              </>
-            )}
-          </div>
+        <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-4">
+          <a
+            href="/"
+            className="block text-gray-700 dark:text-gray-300"
+          >
+            Home
+          </a>
+          <a
+            href="/about"
+            className="block text-gray-700 dark:text-gray-300"
+          >
+            About Us
+          </a>
+          <a
+            href="/contact"
+            className="block text-gray-700 dark:text-gray-300"
+          >
+            Contact
+          </a>
+
+          {!isAuthenticated ? (
+            <>
+              <a
+                href="/login"
+                className="block text-cyan-600 dark:text-cyan-500"
+              >
+                Login
+              </a>
+              <a
+                href="/signup"
+                className="block text-cyan-600 dark:text-cyan-500"
+              >
+                Sign Up
+              </a>
+            </>
+          ) : (
+            <div>
+              <a
+                href="/dashboard"
+                className="block text-gray-700 dark:text-gray-300"
+              >
+                Dashboard
+              </a>
+              <button
+                onClick={handleLogout}
+                className="block text-red-600 dark:text-red-500"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       )}
     </nav>
