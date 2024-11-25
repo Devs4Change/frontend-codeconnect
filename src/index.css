@@ -14,3 +14,11 @@ body {
 .dark {
   color-scheme: dark;
 }
+
+@media (max-width: 640px) {
+  .dark-mode-toggle {
+    visibility: visible !important; /* Ensure the toggle button is visible on mobile */
+    z-index: 1000; /* Ensure it's positioned above other content */
+  }
+}
+

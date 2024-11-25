@@ -241,50 +241,53 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`flex items-center space-x-2 focus:outline-none ${
-                    scrolled ? "text-gray-800 dark:text-white" : "text-white"
+                  className={`flex items-center space-x-2 text-sm font-medium ${
+                    scrolled
+                      ? "text-gray-700 dark:text-gray-300"
+                      : "text-white"
                   }`}
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full overflow-hidden">
                     {userAvatar ? (
-                      <img
-                        src={`https://savefiles.org/${userAvatar}?shareable_link=524`}
-                        alt="avatar"
-                        className="object-cover w-full h-full"
-                      />
+                      <img src={userAvatar} alt="User Avatar" />
                     ) : (
-                      <span className="text-xl text-white">
-                        {getDisplayName().charAt(0)}
+                      <span className="text-sm">
+                        {getDisplayName().charAt(0).toUpperCase()}
                       </span>
                     )}
                   </div>
                   <span className="text-sm">{getDisplayName()}</span>
                   <svg
-                    className="w-4 h-4 text-gray-600 dark:text-white"
+                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
                     viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-4 h-4"
                   >
-                    <path d="M6 9l6 6 6-6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg py-2 w-48">
-                    <a
-                      href="/dashboard"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Dashboard
-                    </a>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
+                  <div className="absolute right-0 w-48 mt-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                    <div className="py-2">
+                      <a
+                        href="/dashboard"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100"
+                      >
+                        Dashboard
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -293,78 +296,69 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-2">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className={`p-2 rounded-md hover:bg-opacity-20 hover:bg-gray-100 focus:outline-none transition-colors ${
+              scrolled ? "text-gray-700 dark:text-gray-300" : "text-white"
+            }z-50`}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? <SunIcon /> : <MoonIcon />}
+          </button>
           <a
             href="/"
-            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+            className="block text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium"
           >
             Home
           </a>
           <a
             href="/about"
-            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+            className="block text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium"
           >
             About Us
           </a>
           <a
             href="/contact"
-            className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+            className="block text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium"
           >
             Contact
           </a>
+
+          {/* Auth Buttons in Mobile View */}
           {!isAuthenticated ? (
             <>
               <a
                 href="/login"
-                className="block text-sm text-cyan-500 hover:bg-gray-100 p-2 rounded-md"
+                className="block text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium"
               >
                 Login
               </a>
               <a
                 href="/signup"
-                className="block text-sm text-cyan-500 hover:bg-gray-100 p-2 rounded-md"
+                className="block text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium"
               >
                 Sign Up
               </a>
             </>
           ) : (
-            <div>
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full text-left text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
+            <>
+              <a
+                href="/dashboard"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
               >
-                {getDisplayName()}
-                <svg
-                  className="w-4 h-4 text-gray-600 dark:text-white inline-block ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+                Dashboard
+              </a>
+              <button
+                onClick={handleLogout}
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              >
+                Logout
               </button>
-              {isDropdownOpen && (
-                <div className="space-y-2">
-                  <a
-                    href="/dashboard"
-                    className="block text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
-                  >
-                    Dashboard
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left text-sm text-gray-700 dark:text-white hover:bg-gray-100 p-2 rounded-md"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+            </>
           )}
         </div>
       )}
